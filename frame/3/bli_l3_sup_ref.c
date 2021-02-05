@@ -52,6 +52,8 @@ err_t bli_gemmsup_ref
 
 	// Check parameters.
 	if ( bli_error_checking_is_enabled() )
+
+
 		bli_gemm_check( alpha, a, b, beta, c, cntx );
 
 #if 0

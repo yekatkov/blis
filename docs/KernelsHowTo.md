@@ -346,7 +346,7 @@ Any and all of these values may be safely ignored; they are completely optional.
 #### Example code for gemm
 
 An example implementation of the `gemm` microkernel may be found in the `template` configuration directory in:
-  * [config/template/kernels/3/bli\_gemm_opt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_gemm_opt_mxn.c)
+  * [config/template/kernels/3/bli\_gemm_template_noopt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_gemm_template_noopt_mxn.c)
 
 
 Note that this implementation is coded in C99 and lacks several kinds of optimization that are typical of real-world optimized microkernels, such as vector instructions (or intrinsics) and loop unrolling in _MR_ or _NR_. It is meant to serve only as a starting point for a microkernel developer.
@@ -440,8 +440,8 @@ Please see the diagram for [gemmtrsm\_l](KernelsHowTo.md#diagram-for-gemmtrsm-l)
 #### Example code for trsm
 
 Example implementations of the `trsm` microkernels may be found in the `template` configuration directory in:
-  * [config/template/kernels/3/bli\_trsm\_l\_opt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_trsm_l_opt_mxn.c)
-  * [config/template/kernels/3/bli\_trsm\_u\_opt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_trsm_u_opt_mxn.c)
+  * [config/template/kernels/3/bli\_trsm\_l\_template_noopt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_trsm_l_template_noopt_mxn.c)
+  * [config/template/kernels/3/bli\_trsm\_u\_template_noopt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_trsm_u_template_noopt_mxn.c)
 
 Note that these implementations are coded in C99 and lack several kinds of optimization that are typical of real-world optimized microkernels, such as vector instructions (or intrinsics) and loop unrolling in _MR_ or _NR_. They are meant to serve only as a starting point for a microkernel developer.
 
@@ -612,8 +612,8 @@ The diagram below shows the packed micropanel operands for `trsm_u` and how elem
 #### Example code for gemmtrsm
 
 Example implementations of the `gemmtrsm` microkernels may be found in the `template` configuration directory in:
-  * [config/template/kernels/3/bli\_gemmtrsm\_l\_opt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_gemmtrsm_l_opt_mxn.c)
-  * [config/template/kernels/3/bli\_gemmtrsm\_u\_opt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_gemmtrsm_u_opt_mxn.c)
+  * [config/template/kernels/3/bli\_gemmtrsm\_l\_template_noopt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_gemmtrsm_l_template_noopt_mxn.c)
+  * [config/template/kernels/3/bli\_gemmtrsm\_u\_template_noopt\_mxn.c](https://github.com/flame/blis/tree/master/config/template/kernels/3/bli_gemmtrsm_u_template_noopt_mxn.c)
 
 Note that these implementations are coded in C99 and lack several kinds of optimization that are typical of real-world optimized microkernels, such as vector instructions (or intrinsics) and loop unrolling in _MR_ or _NR_. They are meant to serve only as a starting point for a microkernel developer.
 

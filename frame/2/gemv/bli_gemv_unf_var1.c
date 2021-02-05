@@ -34,6 +34,73 @@
 
 #include "blis.h"
 
+#define ctype float
+#define ch s
+#define varname gemv_unf_var1 
+
+void PASTEMAC(ch,varname) 
+     ( 
+       trans_t transa, 
+       conj_t  conjx, 
+       dim_t   m, 
+       dim_t   n, 
+       ctype*  alpha, 
+       ctype*  a, inc_t rs_a, inc_t cs_a, 
+       ctype*  x, inc_t incx, 
+       ctype*  beta, 
+       ctype*  y, inc_t incy, 
+       cntx_t* cntx  
+     ) 
+{ 
+	const num_t dt = PASTEMAC(ch,type); 
+
+	ctype*  A1; 
+	ctype*  x1; 
+	ctype*  y1; 
+	dim_t   i; 
+	dim_t   b_fuse, f; 
+	dim_t   n_elem, n_iter; 
+	inc_t   rs_at, cs_at; 
+	conj_t  conja; 
+
+	bli_set_dims_incs_with_trans( transa, 
+	                              m, n, rs_a, cs_a, 
+	                              &n_iter, &n_elem, &rs_at, &cs_at ); 
+
+	conja = bli_extract_conj( transa ); 
+
+	PASTECH(ch,dotxf_ker_ft) kfp_df; 
+
+	/* Query the context for the kernel function pointer and fusing factor. */ 
+	kfp_df = bli_cntx_get_l1f_ker_dt( dt, BLIS_DOTXF_KER, cntx ); 
+	b_fuse = bli_cntx_get_blksz_def_dt( dt, BLIS_DF, cntx ); 
+
+	for ( i = 0; i < n_iter; i += f ) 
+	{ 
+		f  = bli_determine_blocksize_dim_f( i, n_iter, b_fuse ); 
+
+		A1 = a + (i  )*rs_at + (0  )*cs_at; 
+		x1 = x + (0  )*incy; 
+		y1 = y + (i  )*incy; 
+
+		/* y1 = beta * y1 + alpha * A1 * x; */ 
+		kfp_df 
+		( 
+		  conja, 
+		  conjx, 
+		  n_elem, 
+		  f, 
+		  alpha, 
+		  A1,   cs_at, rs_at, 
+		  x1,   incx, 
+		  beta, 
+		  y1,   incy, 
+		  cntx  
+		); 
+
+	} 
+}
+
 #undef  GENTFUNC
 #define GENTFUNC( ctype, ch, varname ) \
 \
@@ -100,5 +167,6 @@ void PASTEMAC(ch,varname) \
 	} \
 }
 
-INSERT_GENTFUNC_BASIC0( gemv_unf_var1 )
-
+GENTFUNC( double,   d, gemv_unf_var1 ) \
+GENTFUNC( scomplex, c, gemv_unf_var1 ) \
+GENTFUNC( dcomplex, z, gemv_unf_var1 )

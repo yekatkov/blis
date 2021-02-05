@@ -39,6 +39,89 @@
 //
 // Define BLAS-like interfaces with typed operands.
 //
+#define ctype float
+#define ch s
+#define opname gemv
+#define ftname gemv
+#define rvarname gemv_unf_var1
+#define cvarname gemv_unf_var2 
+
+void PASTEMAC2(ch,opname,EX_SUF) 
+     ( 
+       trans_t transa, 
+       conj_t  conjx, 
+       dim_t   m, 
+       dim_t   n, 
+       ctype*  alpha, 
+       ctype*  a, inc_t rs_a, inc_t cs_a, 
+       ctype*  x, inc_t incx, 
+       ctype*  beta, 
+       ctype*  y, inc_t incy  
+       BLIS_TAPI_EX_PARAMS  
+     ) 
+{ 
+	bli_init_once(); 
+
+	BLIS_TAPI_EX_DECLS 
+
+	dim_t m_y, n_x; 
+
+	/* Determine the dimensions of y and x. */ 
+	bli_set_dims_with_trans( transa, m, n, &m_y, &n_x ); 
+
+	/* If y has zero elements, return early. */ 
+	if ( bli_zero_dim1( m_y ) ) return; 
+
+	/* Obtain a valid context from the gks if necessary. */ 
+	if ( cntx == NULL ) cntx = bli_gks_query_cntx(); 
+
+	/* If x has zero elements, or if alpha is zero, scale y by beta and
+	   return early. */ 
+	if ( bli_zero_dim1( n_x ) || PASTEMAC(ch,eq0)( *alpha ) ) 
+	{ 
+		PASTEMAC2(ch,scalv,BLIS_TAPI_EX_SUF) 
+		( 
+		  BLIS_NO_CONJUGATE, 
+		  m_y, 
+		  beta, 
+		  y, incy, 
+		  cntx, 
+		  NULL  
+		); 
+		return; 
+	} 
+
+	/* Declare a void function pointer for the current operation. */ 
+	PASTECH2(ch,ftname,_unb_ft) f; 
+
+	/* Choose the underlying implementation. */ 
+	if ( bli_does_notrans( transa ) ) 
+	{ 
+		if ( bli_is_row_stored( rs_a, cs_a ) ) f = PASTEMAC(ch,rvarname); 
+		else /* column or general stored */    f = PASTEMAC(ch,cvarname); 
+	} 
+	else /* if ( bli_does_trans( transa ) ) */ 
+	{ 
+		if ( bli_is_row_stored( rs_a, cs_a ) ) f = PASTEMAC(ch,cvarname); 
+		else /* column or general stored */    f = PASTEMAC(ch,rvarname); 
+	} 
+
+	/* Invoke the variant chosen above, which loops over a level-1v or
+	   level-1f kernel to implement the current operation. */ 
+	f 
+	( 
+	  transa, 
+	  conjx, 
+	  m, 
+	  n, 
+	  alpha, 
+	  a, rs_a, cs_a, 
+	  x, incx, 
+	  beta, 
+	  y, incy, 
+	  cntx 
+	); 
+}
 
 #undef  GENTFUNC
 #define GENTFUNC( ctype, ch, opname, ftname, rvarname, cvarname ) \
@@ -120,8 +203,9 @@ void PASTEMAC2(ch,opname,EX_SUF) \
 	); \
 }
 
-INSERT_GENTFUNC_BASIC3( gemv, gemv, gemv_unf_var1, gemv_unf_var2 )
-
+GENTFUNC( double,   d, gemv, gemv, gemv_unf_var1, gemv_unf_var2 ) \
+GENTFUNC( scomplex, c, gemv, gemv, gemv_unf_var1, gemv_unf_var2 ) \
+GENTFUNC( dcomplex, z, gemv, gemv, gemv_unf_var1, gemv_unf_var2 )
 
 #undef  GENTFUNC
 #define GENTFUNC( ctype, ch, opname, ftname, rvarname, cvarname ) \

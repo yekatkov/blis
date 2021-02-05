@@ -1502,9 +1502,193 @@ void PASTEMAC3(ch,opname,arch,suf) \
 	} \
 }
 
-INSERT_GENTFUNC_BASIC3( packm_16xk, 16, BLIS_CNAME_INFIX, BLIS_REF_SUFFIX )
+GENTFUNC( double,   d, packm_16xk, 16, BLIS_CNAME_INFIX, BLIS_REF_SUFFIX ) \
+GENTFUNC( scomplex, c, packm_16xk, 16, BLIS_CNAME_INFIX, BLIS_REF_SUFFIX ) \
+GENTFUNC( dcomplex, z, packm_16xk, 16, BLIS_CNAME_INFIX, BLIS_REF_SUFFIX )
 
+#define ctype float
+#define ch s
+#define opname packm_16xk
+#define mnr 16
+#define arch BLIS_CNAME_INFIX
+#define suf BLIS_REF_SUFFIX 
 
+void bli_spackm_16xk_haswell_ref
+     ( 
+       conj_t           conja, 
+       pack_t           schema, 
+       dim_t            cdim, 
+       dim_t            n, 
+       dim_t            n_max, 
+       ctype*  restrict kappa, 
+       ctype*  restrict a, inc_t inca, inc_t lda, 
+       ctype*  restrict p,             inc_t ldp, 
+       cntx_t* restrict cntx 
+     ) 
+{ 
+	ctype* restrict kappa_cast = kappa; 
+	ctype* restrict alpha1     = a; 
+	ctype* restrict pi1        = p; 
+
+	if ( cdim == mnr ) 
+	{ 
+		if ( PASTEMAC(ch,eq1)( *kappa_cast ) ) 
+		{ 
+			if ( bli_is_conj( conja ) ) 
+			{ 
+				for ( dim_t k = n; k != 0; --k ) 
+				{ 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 0*inca), *(pi1 + 0) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 1*inca), *(pi1 + 1) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 2*inca), *(pi1 + 2) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 3*inca), *(pi1 + 3) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 4*inca), *(pi1 + 4) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 5*inca), *(pi1 + 5) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 6*inca), *(pi1 + 6) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 7*inca), *(pi1 + 7) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 8*inca), *(pi1 + 8) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 + 9*inca), *(pi1 + 9) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 +10*inca), *(pi1 +10) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 +11*inca), *(pi1 +11) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 +12*inca), *(pi1 +12) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 +13*inca), *(pi1 +13) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 +14*inca), *(pi1 +14) ); 
+					PASTEMAC(ch,copyjs)( *(alpha1 +15*inca), *(pi1 +15) ); 
+
+					alpha1 += lda; 
+					pi1    += ldp; 
+				} 
+			} 
+			else 
+			{ 
+				for ( dim_t k = n; k != 0; --k ) 
+				{ 
+					PASTEMAC(ch,copys)( *(alpha1 + 0*inca), *(pi1 + 0) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 1*inca), *(pi1 + 1) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 2*inca), *(pi1 + 2) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 3*inca), *(pi1 + 3) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 4*inca), *(pi1 + 4) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 5*inca), *(pi1 + 5) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 6*inca), *(pi1 + 6) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 7*inca), *(pi1 + 7) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 8*inca), *(pi1 + 8) ); 
+					PASTEMAC(ch,copys)( *(alpha1 + 9*inca), *(pi1 + 9) ); 
+					PASTEMAC(ch,copys)( *(alpha1 +10*inca), *(pi1 +10) ); 
+					PASTEMAC(ch,copys)( *(alpha1 +11*inca), *(pi1 +11) ); 
+					PASTEMAC(ch,copys)( *(alpha1 +12*inca), *(pi1 +12) ); 
+					PASTEMAC(ch,copys)( *(alpha1 +13*inca), *(pi1 +13) ); 
+					PASTEMAC(ch,copys)( *(alpha1 +14*inca), *(pi1 +14) ); 
+					PASTEMAC(ch,copys)( *(alpha1 +15*inca), *(pi1 +15) ); 
+
+					alpha1 += lda; 
+					pi1    += ldp; 
+				} 
+			} 
+		} 
+		else 
+		{ 
+			if ( bli_is_conj( conja ) ) 
+			{ 
+				for ( dim_t k = n; k != 0; --k ) 
+				{ 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 0*inca), *(pi1 + 0) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 1*inca), *(pi1 + 1) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 2*inca), *(pi1 + 2) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 3*inca), *(pi1 + 3) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 4*inca), *(pi1 + 4) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 5*inca), *(pi1 + 5) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 6*inca), *(pi1 + 6) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 7*inca), *(pi1 + 7) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 8*inca), *(pi1 + 8) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 + 9*inca), *(pi1 + 9) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 +10*inca), *(pi1 +10) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 +11*inca), *(pi1 +11) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 +12*inca), *(pi1 +12) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 +13*inca), *(pi1 +13) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 +14*inca), *(pi1 +14) ); 
+					PASTEMAC(ch,scal2js)( *kappa_cast, *(alpha1 +15*inca), *(pi1 +15) ); 
+
+					alpha1 += lda; 
+					pi1    += ldp; 
+				} 
+			} 
+			else 
+			{ 
+				for ( dim_t k = n; k != 0; --k ) 
+				{ 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 0*inca), *(pi1 + 0) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 1*inca), *(pi1 + 1) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 2*inca), *(pi1 + 2) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 3*inca), *(pi1 + 3) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 4*inca), *(pi1 + 4) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 5*inca), *(pi1 + 5) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 6*inca), *(pi1 + 6) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 7*inca), *(pi1 + 7) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 8*inca), *(pi1 + 8) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 + 9*inca), *(pi1 + 9) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 +10*inca), *(pi1 +10) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 +11*inca), *(pi1 +11) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 +12*inca), *(pi1 +12) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 +13*inca), *(pi1 +13) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 +14*inca), *(pi1 +14) ); 
+					PASTEMAC(ch,scal2s)( *kappa_cast, *(alpha1 +15*inca), *(pi1 +15) ); 
+
+					alpha1 += lda; 
+					pi1    += ldp; 
+				} 
+			} 
+		} 
+	} 
+	else /* if ( cdim < mnr ) */ 
+	{ 
+		PASTEMAC2(ch,scal2m,BLIS_TAPI_EX_SUF) 
+		( 
+		  0, 
+		  BLIS_NONUNIT_DIAG, 
+		  BLIS_DENSE, 
+		  ( trans_t )conja, 
+		  cdim, 
+		  n, 
+		  kappa, 
+		  a, inca, lda, 
+		  p,    1, ldp, 
+		  cntx, 
+		  NULL  
+		); 
+
+		/* if ( cdim < mnr ) */ 
+		{ 
+			const dim_t     i      = cdim; 
+			const dim_t     m_edge = mnr - cdim; 
+			const dim_t     n_edge = n_max; 
+			ctype* restrict p_cast = p; 
+			ctype* restrict p_edge = p_cast + (i  )*1; 
+
+			PASTEMAC(ch,set0s_mxn) 
+			( 
+			  m_edge, 
+			  n_edge, 
+			  p_edge, 1, ldp  
+			); 
+		} 
+	} 
+
+	if ( n < n_max ) 
+	{ 
+		const dim_t     j      = n; 
+		const dim_t     m_edge = mnr; 
+		const dim_t     n_edge = n_max - n; 
+		ctype* restrict p_cast = p; 
+		ctype* restrict p_edge = p_cast + (j  )*ldp; 
+
+		PASTEMAC(ch,set0s_mxn) 
+		( 
+		  m_edge, 
+		  n_edge, 
+		  p_edge, 1, ldp  
+		); 
+	} 
+}
 
 #undef  GENTFUNC
 #define GENTFUNC( ctype, ch, opname, mnr, arch, suf ) \
